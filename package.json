@@ -1,0 +1,20 @@
+{
+    "name": "api-eclass",
+    "version": "1.0.0",
+    "description": "API monolítica em Express para gestão de usuários",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node index.js"
+    },
+    "keywords": [
+        "api",
+        "express",
+        "usuarios"
+    ],
+    "author": "seu-nome",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.22.1"
+    }
+}
