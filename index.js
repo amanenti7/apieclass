@@ -1,77 +1,60 @@
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
-
 app.use(express.json());
+app.use(cors());
 
-// Array simulando banco de dados
-let usuarios = [
-  { id: 1, nome: "João" },
-  { id: 2, nome: "Maria" },
-  { id: 3, nome: "Carlos" }
-];
+let games = [];
+let teams = [];
+let competitors = [];
+let matches = [];
 
-// Rota raiz
-app.get('/', (req, res) => {
-  res.send(`Bem vindo a API e-class, existem ${usuarios.length} usuários cadastrados!`);
+const nextId = arr => arr.length ? arr[arr.length - 1].id + 1 : 1;
+
+/* GAMES */
+app.get('/games', (req, res) => res.json(games));
+app.post('/games', (req, res) => {
+  const obj = { id: nextId(games), ...req.body };
+  games.push(obj);
+  res.json(obj);
 });
 
-// GET todos os usuários com filtro opcional por nome
-app.get('/usuarios', (req, res) => {
-  const { nome } = req.query;
-
-  if (nome) {
-    // Filtra usuários cujo nome contém a string do query param (case insensitive)
-    const resultado = usuarios.filter(u =>
-      u.nome.toLowerCase().includes(nome.toLowerCase())
-    );
-    return res.json(resultado);
-  }
-
-  // Se não houver query param, retorna todos
-  res.json(usuarios);
+/* TEAMS */
+app.get('/teams', (req, res) => res.json(teams));
+app.post('/teams', (req, res) => {
+  const obj = { id: nextId(teams), ...req.body };
+  teams.push(obj);
+  res.json(obj);
 });
 
-// POST criar usuário
-app.post('/usuarios', (req, res) => {
-  const { nome } = req.body;
+/* COMPETITORS */
+app.get('/competitors', (req, res) => res.json(competitors));
+app.post('/competitors', (req, res) => {
+  const obj = { id: nextId(competitors), ...req.body };
+  competitors.push(obj);
+  res.json(obj);
+});
 
-  if (!nome) return res.status(400).json({ erro: "Nome é obrigatório" });
+/* MATCHES */
+app.get('/matches', (req, res) => res.json(matches));
 
-  const novoUsuario = {
-    id: usuarios.length > 0 ? usuarios[usuarios.length - 1].id + 1 : 1,
-    nome
+app.post('/matches', (req, res) => {
+  const obj = {
+    id: nextId(matches),
+    score1: 0,
+    score2: 0,
+    status: "scheduled",
+    ...req.body
   };
-
-  usuarios.push(novoUsuario);
-  res.status(201).json(novoUsuario);
+  matches.push(obj);
+  res.json(obj);
 });
 
-// PUT atualizar usuário
-app.put('/usuarios/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const { nome } = req.body;
-
-  const usuario = usuarios.find(u => u.id === id);
-  if (!usuario) return res.status(404).json({ erro: "Usuário não encontrado" });
-  if (!nome) return res.status(400).json({ erro: "Nome é obrigatório" });
-
-  usuario.nome = nome;
-  res.json(usuario);
+app.put('/matches/:id', (req, res) => {
+  const m = matches.find(x => x.id == req.params.id);
+  Object.assign(m, req.body);
+  res.json(m);
 });
 
-// DELETE remover usuário
-app.delete('/usuarios/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = usuarios.findIndex(u => u.id === id);
-
-  if (index === -1) return res.status(404).json({ erro: "Usuário não encontrado" });
-
-  const removido = usuarios.splice(index, 1);
-  res.json({ mensagem: "Usuário removido com sucesso", usuario: removido[0] });
-});
-
-// Inicialização do servidor
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`API rodando em http://localhost:${PORT}`);
-});
+app.listen(3000, () => console.log("API rodando"));
