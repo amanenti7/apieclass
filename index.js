@@ -5,10 +5,52 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-let games = [];
-let teams = [];
-let competitors = [];
-let matches = [];
+let games = [
+  {
+    id: 1,
+    name: "Valorant",
+    category: "FPS"
+  },
+  {
+    id: 2,
+    name: "League of Legends",
+    category: "MOBA"
+  }
+];
+
+let teams = [
+  {
+    id: 1,
+    name: "3º Informática A",
+    points: 9
+  },
+  {
+    id: 2,
+    name: "2º Desenvolvimento",
+    points: 6
+  }
+];
+
+let competitors = [
+  {
+    id: 1,
+    name: "Ana",
+    age: 17,
+    teamId: 1
+  }
+];
+
+let matches = [
+  {
+    id: 1,
+    team1: "3º Informática A",
+    team2: "2º Desenvolvimento",
+    gameId: 1,
+    score1: 2,
+    score2: 1,
+    status: "finished"
+  }
+];
 
 const nextId = arr => arr.length ? arr[arr.length - 1].id + 1 : 1;
 
